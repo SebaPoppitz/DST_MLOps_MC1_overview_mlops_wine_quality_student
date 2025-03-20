@@ -6,3 +6,39 @@ stages:
     - src/pipeline_steps/stage01_data_ingestion.py
     outs:
     - data/raw/winequality-red.csv
+  data_validation:
+    cmd: python src/pipeline_steps/stage02_data_validation.py
+    deps:
+    - data/raw/winequality-red.csv
+    - src/pipeline_steps/stage02_data_validation.py
+    outs:
+    - data/status.txt
+  data_transformation:
+    cmd: python src/pipeline_steps/stage03_data_transformation.py
+    deps:
+      - src/pipeline_steps/stage03_data_transformation.py
+      - data/raw/winequality-red.csv
+    outs:
+      - data/processed/X_train.csv
+      - data/processed/X_test.csv
+      - data/processed/y_train.csv
+      - data/processed/y_test.csv
+
+  model_trainer:
+    cmd: python src/pipeline_steps/stage04_model_trainer.py
+    deps:
+      - src/pipeline_steps/stage04_model_trainer.py
+      - data/processed/X_train.csv
+      - data/processed/y_train.csv
+    outs:
+      - models/model.joblib
+
+  model_evaluation:
+    cmd: python src/pipeline_steps/stage05_model_evaluation.py
+    deps:
+      - src/pipeline_steps/stage05_model_evaluation.py
+      - models/model.joblib
+      - data/processed/X_test.csv
+      - data/processed/y_test.csv
+    metrics:
+      - metrics/metrics.json

@@ -4,4 +4,5 @@
 devserver.sh
 main.py
 data/
+models/
 */__pycache__/*

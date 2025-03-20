@@ -1,5 +1,9 @@
 import sys
 from pathlib import Path
+import mlflow
+
+#set the MLflow tracking URI for your pipeline
+mlflow.set_tracking_uri("https://dagshub.com/SebaPoppitz/DST_MLOps_MC1_overview_mlops_wine_quality_student.mlflow")
 
 # Add parent directory to path
 parent_folder = str(Path(__file__).parent.parent.parent)
@@ -17,6 +21,10 @@ class ModelEvaluationTrainingPipeline:
 
     def main(self):
         config = ConfigurationManager()
+        model_evaluation_config = config.get_model_evaluation_config()
+        model_evaluation = ModelEvaluation(config = model_evaluation_config)
+        model_evaluation.log_into_mlflow()
+
 
 if __name__ == '__main__':
     try:
